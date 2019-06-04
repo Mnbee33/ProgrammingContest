@@ -1,16 +1,9 @@
 package chapter3;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
-public class BubbleSort {
-    int size;
-    int count = 0;
-    int[] a;
+public class BubbleSort extends Sort {
 
     BubbleSort(int n, int[] a) {
-        size = n;
-        this.a = a;
+        super(n, a);
     }
 
     void sort() {
@@ -21,26 +14,12 @@ public class BubbleSort {
             for (int j = size - 1; j > 0; j--) {
                 // System.out.println(j);
                 if (a[j] < a[j - 1]) {
-                    swap(j);
+                    swap(j, j - 1);
                     count++;
                     hasNext = true;
                     // System.out.println(toString());
                 }
             }
         }
-    }
-
-    private void swap(int j) {
-        int from = a[j];
-        a[j] = a[j - 1];
-        a[j - 1] = from;
-    }
-
-    @Override
-    public String toString() {
-        String result = Arrays.stream(a)
-                .mapToObj(String::valueOf)
-                .collect(Collectors.joining(" "));
-        return result + System.lineSeparator() + count;
     }
 }
