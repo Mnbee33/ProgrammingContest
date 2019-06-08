@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class LinerSearch {
-    int size;
+public class LinerSearch extends Search {
     List<Integer> list;
 
-    LinerSearch(int size, Integer[] list) {
-        this.size = size;
-        List<Integer> arrays = Arrays.asList(list);
+    LinerSearch(int size, Integer[] a) {
+        super(size, a);
+        List<Integer> arrays = Arrays.asList(a);
         this.list = new ArrayList<>(arrays);
+    }
+
+    boolean isFound(int key) {
+        setSearchTarget(key);
+        return isFoundByLinerSearch(key);
     }
 
     int listEnd() {
@@ -26,19 +30,5 @@ public class LinerSearch {
         int i = 0;
         while (list.get(i) != key) i++;
         return i != size;
-    }
-
-
-    boolean isFound(int key) {
-        setSearchTarget(key);
-        return isFoundByLinerSearch(key);
-    }
-
-    public int countMatch(Integer[] t) {
-        int total = 0;
-        for (int key : t) {
-            if (isFound(key)) total++;
-        }
-        return total;
     }
 }
