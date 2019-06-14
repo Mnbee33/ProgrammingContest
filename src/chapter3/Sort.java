@@ -4,16 +4,16 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class Sort {
-    int size;
-    int[] a;
-    int count;
+    protected int size;
+    protected int[] a;
+    protected int count;
 
-    Sort(int n, int[] a) {
+    public Sort(int n, int[] a) {
         size = n;
         this.a = a;
     }
 
-    void swap(int fromIndex, int toIndex) {
+    protected void swap(int fromIndex, int toIndex) {
         int temp = a[fromIndex];
         a[fromIndex] = a[toIndex];
         a[toIndex] = temp;
