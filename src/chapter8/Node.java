@@ -1,0 +1,35 @@
+package chapter8;
+
+public class Node {
+    static final int NIL = -1;
+    int id;
+    int parent = NIL;
+    int left = NIL;
+    int right = NIL;
+    int depth;
+
+    String getType() {
+        if (parent == Node.NIL) {
+            return "root, ";
+        } else if (left == Node.NIL) {
+            return "leaf, ";
+        } else {
+            return "internal node, ";
+        }
+    }
+
+    boolean isRoot() {
+        return parent == NIL;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder node = new StringBuilder();
+        node.append("node " + id + ": ");
+        node.append("parent = " + parent + ", ");
+        node.append("depth = " + depth + ", ");
+        node.append(getType());
+
+        return node.toString();
+    }
+}
