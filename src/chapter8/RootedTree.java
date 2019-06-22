@@ -104,7 +104,7 @@ public class RootedTree {
 
     }
 
-    private boolean isEmptyNode(int children) {
-        return children != Node.NIL;
+    private boolean isEmptyNode(int node) {
+        return node != Node.NIL;
     }
 }
