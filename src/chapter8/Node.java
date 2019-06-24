@@ -8,6 +8,14 @@ public class Node {
     int right = NIL;
     int depth;
 
+    public Node() {
+
+    }
+
+    public Node(int id) {
+        this.id = id;
+    }
+
     String getType() {
         if (parent == Node.NIL) {
             return "root, ";
@@ -31,5 +39,17 @@ public class Node {
         node.append(getType());
 
         return node.toString();
+    }
+
+    public boolean isEmptyLeft() {
+        return left == NIL;
+    }
+
+    public boolean isEmptyRight() {
+        return right == NIL;
+    }
+
+    public boolean isEmptyParent() {
+        return parent == NIL;
     }
 }
