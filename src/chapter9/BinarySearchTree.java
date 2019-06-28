@@ -22,7 +22,7 @@ public class BinarySearchTree {
             String command = commands[0];
             if (command.equals("insert")) {
                 insert(Integer.valueOf(commands[1]));
-            } else if (command.equals("buildResult")) {
+            } else if (command.equals("print")) {
                 break;
             }
         }
