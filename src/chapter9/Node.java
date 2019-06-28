@@ -70,10 +70,6 @@ public class Node {
     }
 
     private Node getChild(Node current) {
-        if (isSmaller(current)) {
-            return current.left;
-        } else {
-            return current.right;
-        }
+        return isSmaller(current) ? current.left : current.right;
     }
 }
