@@ -4,6 +4,7 @@ public class BinarySearchTree {
     int size;
 
     Node root = Node.nil();
+    StringBuilder foundResult = new StringBuilder();
     StringBuilder inorderKey = new StringBuilder();
     StringBuilder preorderKey = new StringBuilder();
 
@@ -12,20 +13,30 @@ public class BinarySearchTree {
     }
 
     public String createTree(String[] commandLines) {
-        insertUntilPrintCommand(commandLines);
+        main(commandLines);
         return buildResult();
     }
 
-    void insertUntilPrintCommand(String[] commandLines) {
+    void main(String[] commandLines) {
         for (String line : commandLines) {
-            String[] commands = line.split(" ");
-            String command = commands[0];
-            if (command.equals("insert")) {
-                insert(Integer.valueOf(commands[1]));
-            } else if (command.equals("print")) {
-                break;
-            }
+            Input input = Input.from(line);
+            if (executeCommandUntilPrint(input)) break;
         }
+    }
+
+    private boolean executeCommandUntilPrint(Input input) {
+        switch (input.command) {
+            case "insert":
+                insert(input.key);
+                break;
+            case "find":
+                Node found = find(root, input.key);
+                setFoundResult(found);
+                break;
+            case "print":
+                return true;
+        }
+        return false;
     }
 
     void insert(int key) {
@@ -39,6 +50,22 @@ public class BinarySearchTree {
         } else {
             parent.setChild(target);
         }
+    }
+
+    Node find(Node u, int key) {
+        while (!u.isEmpty() && key != u.key) {
+            if (key < u.key) {
+                u = u.left;
+            } else {
+                u = u.right;
+            }
+        }
+        return u;
+    }
+
+    private void setFoundResult(Node found) {
+        foundResult.append(found.isEmpty() ? "no" : "yes");
+        foundResult.append(System.lineSeparator());
     }
 
     void inorder(Node u) {
@@ -57,11 +84,20 @@ public class BinarySearchTree {
 
     String buildResult() {
         StringBuilder result = new StringBuilder();
+        buildFindResult(result);
+        buildTreeOrder(result);
+        return result.toString();
+    }
+
+    private void buildFindResult(StringBuilder result) {
+        result.append(foundResult);
+    }
+
+    private void buildTreeOrder(StringBuilder result) {
         inorder(root);
         preorder(root);
         result.append(inorderKey);
         result.append(System.lineSeparator());
         result.append(preorderKey);
-        return result.toString();
     }
 }
