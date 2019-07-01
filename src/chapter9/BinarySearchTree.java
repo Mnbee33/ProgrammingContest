@@ -2,11 +2,8 @@ package chapter9;
 
 public class BinarySearchTree {
     int size;
-
     Node root = Node.nil();
-    StringBuilder foundResult = new StringBuilder();
-    StringBuilder inorderKey = new StringBuilder();
-    StringBuilder preorderKey = new StringBuilder();
+    StringBuilder result = new StringBuilder();
 
     public BinarySearchTree(int n) {
         this.size = n;
@@ -14,29 +11,34 @@ public class BinarySearchTree {
 
     public String createTree(String[] commandLines) {
         main(commandLines);
-        return buildResult();
+        return result.toString();
     }
 
     void main(String[] commandLines) {
         for (String line : commandLines) {
             Input input = Input.from(line);
-            if (executeCommandUntilPrint(input)) break;
+            executeCommandUntilPrint(input);
         }
     }
 
-    private boolean executeCommandUntilPrint(Input input) {
+    private void executeCommandUntilPrint(Input input) {
         switch (input.command) {
             case "insert":
                 insert(input.key);
                 break;
-            case "find":
-                Node found = find(root, input.key);
+            case "findFromTree":
+                Node found = root.findFromTree(input.key);
                 setFoundResult(found);
                 break;
+            case "delete":
+                delete(root.findFromTree(input.key));
+                break;
             case "print":
-                return true;
+                setTreeOrder();
+            default:
+                break;
+
         }
-        return false;
     }
 
     void insert(int key) {
@@ -52,52 +54,62 @@ public class BinarySearchTree {
         }
     }
 
-    Node find(Node u, int key) {
-        while (!u.isEmpty() && key != u.key) {
-            if (key < u.key) {
-                u = u.left;
-            } else {
-                u = u.right;
-            }
-        }
-        return u;
-    }
-
     private void setFoundResult(Node found) {
-        foundResult.append(found.isEmpty() ? "no" : "yes");
-        foundResult.append(System.lineSeparator());
+        result.append(found.isEmpty() ? "no" : "yes");
+        result.append(System.lineSeparator());
     }
 
-    void inorder(Node u) {
-        if (u.isEmpty()) return;
-        inorder(u.left);
-        inorderKey.append(" " + u.key);
-        inorder(u.right);
+    void delete(Node node) {
+        Node target = node.fixDeleteTarget();
+        Node targetChild = target.getChildLeftFirst();
+
+        target.setParent(targetChild);
+
+        moveChild(target, targetChild);
+
+        if (!target.equals(node)) {
+            node.key = target.key;
+        }
     }
 
-    void preorder(Node u) {
-        if (u.isEmpty()) return;
-        preorderKey.append(" " + u.key);
-        preorder(u.left);
-        preorder(u.right);
+    private void moveChild(Node target, Node targetChild) {
+        if (target.parent.isEmpty()) {
+            root = targetChild;
+        } else {
+            target.slideChild(targetChild);
+        }
     }
 
-    String buildResult() {
-        StringBuilder result = new StringBuilder();
-        buildFindResult(result);
-        buildTreeOrder(result);
-        return result.toString();
+    private void setTreeOrder() {
+        setInorderToResult();
+        setPreorderToResult();
     }
 
-    private void buildFindResult(StringBuilder result) {
-        result.append(foundResult);
-    }
-
-    private void buildTreeOrder(StringBuilder result) {
-        inorder(root);
-        preorder(root);
+    private void setInorderToResult() {
+        StringBuilder inorderKey = new StringBuilder();
+        inorder(root, inorderKey);
         result.append(inorderKey);
         result.append(System.lineSeparator());
+    }
+
+    void inorder(Node u, StringBuilder inorderKey) {
+        if (u.isEmpty()) return;
+        inorder(u.left, inorderKey);
+        inorderKey.append(" " + u.key);
+        inorder(u.right, inorderKey);
+    }
+
+    private void setPreorderToResult() {
+        StringBuilder preorderKey = new StringBuilder();
+        preorder(root, preorderKey);
         result.append(preorderKey);
+        result.append(System.lineSeparator());
+    }
+
+    void preorder(Node u, StringBuilder preorderKey) {
+        if (u.isEmpty()) return;
+        preorderKey.append(" " + u.key);
+        preorder(u.left, preorderKey);
+        preorder(u.right, preorderKey);
     }
 }

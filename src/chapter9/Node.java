@@ -72,4 +72,71 @@ public class Node {
     private Node getChild(Node current) {
         return isSmaller(current) ? current.left : current.right;
     }
+
+    Node findFromTree(int key) {
+        Node target = this;
+        while (!target.isEmpty() && key != target.key) {
+            if (key < target.key) {
+                target = target.left;
+            } else {
+                target = target.right;
+            }
+        }
+        return target;
+    }
+
+    Node getChildLeftFirst() {
+        if (!left.isEmpty()) {
+            return left;
+        } else {
+            return right;
+        }
+    }
+
+    Node fixDeleteTarget() {
+        if (left.isEmpty() || right.isEmpty()) {
+            return this;
+        } else {
+            return successor();
+        }
+    }
+
+    void slideChild(Node child) {
+        if (equals(parent.left)) {
+            parent.left = child;
+        } else {
+            parent.right = child;
+        }
+    }
+
+    Node successor() {
+        if (!right.isEmpty()) {
+            return right.minimum();
+        }
+        return getParentHasThisInLeft();
+    }
+
+    private Node getParentHasThisInLeft() {
+        Node parent = this.parent;
+        Node base = this;
+        while (!parent.isEmpty() && base.equals(parent.right)) {
+            base = parent;
+            parent = parent.parent;
+        }
+        return parent;
+    }
+
+    private Node minimum() {
+        Node node = this;
+        while (!node.left.isEmpty()) {
+            node = node.left;
+        }
+        return node;
+    }
+
+    void setParent(Node child) {
+        if (!child.isEmpty()) {
+            child.parent = parent;
+        }
+    }
 }
