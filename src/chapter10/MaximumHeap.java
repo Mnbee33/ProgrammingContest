@@ -68,7 +68,7 @@ public class MaximumHeap {
         return (source <= size) && (tree[source] > tree[compared]);
     }
 
-    private void swap(int fromIndex, int toIndex) {
+    void swap(int fromIndex, int toIndex) {
         int temp = tree[fromIndex];
         tree[fromIndex] = tree[toIndex];
         tree[toIndex] = temp;
