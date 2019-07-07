@@ -1,7 +1,5 @@
 package chapter10;
 
-import java.util.Arrays;
-
 public class PriorityQueue {
     MaximumHeap heap;
 
@@ -9,54 +7,64 @@ public class PriorityQueue {
         heap = new MaximumHeap(0);
     }
 
-    int extract() {
-        int max;
-        if (heap.size < 1) throw new IllegalArgumentException("ヒープに要素が格納されていません");
-        max = heap.tree[1];
-        heap.tree[1] = heap.tree[heap.size];
-        heap.size--;
-        heap.tree = Arrays.copyOf(heap.tree, heap.size + 1);
-        heap.maxHeapify(1);
-        return max;
-    }
-
-    void insert(int key) {
-        heap.size++;
-        heap.tree = Arrays.copyOf(heap.tree, heap.size + 1);
-        increaseKey(heap.size, key);
-    }
-
-    void increaseKey(int i, int key) {
-        if (key < heap.tree[i]) return;
-        heap.tree[i] = key;
-        while (i > 1 && heap.tree[i / 2] < heap.tree[i]) {
-            heap.swap(i, i / 2);
-        }
-    }
-
     public String submit(String[] commandLines) {
-        StringBuilder dequeues = new StringBuilder();
+        StringBuilder dequeue = new StringBuilder();
 
         boolean isOver = false;
         for (String line : commandLines) {
             if (isOver) break;
-
-            String[] inputs = line.split(" ");
-            switch (inputs[0]) {
-                case "insert":
-                    insert(Integer.parseInt(inputs[1]));
-                    break;
-                case "extract":
-                    int extract = extract();
-                    dequeues.append(extract);
-                    dequeues.append(System.lineSeparator());
-                    break;
-                default:
-                    isOver = true;
-                    break;
-            }
+            isOver = executeCommandUntilEnd(dequeue, line.split(" "));
         }
 
-        return dequeues.toString().trim();
+        return dequeue.toString().trim();
+    }
+
+    boolean executeCommandUntilEnd(StringBuilder dequeue, String[] inputs) {
+        switch (inputs[0]) {
+            case "insert":
+                insert(Integer.parseInt(inputs[1]));
+                return false;
+            case "extract":
+                dequeue.append(extract());
+                dequeue.append(System.lineSeparator());
+                return false;
+            case "end":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    void insert(int key) {
+        heap.sizeUp();
+        heap.resize();
+        increaseKey(heap.size, key);
+    }
+
+    void increaseKey(int i, int key) {
+        if (key < heap.get(i)) return;
+        heap.set(i, key);
+        swapToParent(i);
+    }
+
+    private void swapToParent(int i) {
+        int parent = i / 2;
+        while (i > 1 && heap.get(parent) < heap.get(i)) {
+            heap.swap(i, parent);
+        }
+    }
+
+    int extract() {
+        if (heap.size < 1) throw new IllegalArgumentException("ヒープに要素が格納されていません");
+        int max = heap.getFirstNode();
+        removeFirstNode();
+        return max;
+    }
+
+    private void removeFirstNode() {
+        heap.set(1, heap.getLastNode());
+        heap.sizeDown();
+        heap.resize();
+        heap.maxHeapify(1);
     }
 }

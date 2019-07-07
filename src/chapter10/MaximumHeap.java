@@ -1,5 +1,7 @@
 package chapter10;
 
+import java.util.Arrays;
+
 public class MaximumHeap {
     int size;
     int[] tree;
@@ -72,5 +74,33 @@ public class MaximumHeap {
         int temp = tree[fromIndex];
         tree[fromIndex] = tree[toIndex];
         tree[toIndex] = temp;
+    }
+
+    int get(int i) {
+        return tree[i];
+    }
+
+    void set(int index, int value) {
+        tree[index] = value;
+    }
+
+    void sizeUp() {
+        size++;
+    }
+
+    void sizeDown() {
+        size--;
+    }
+
+    int getFirstNode() {
+        return get(1);
+    }
+
+    int getLastNode() {
+        return get(size);
+    }
+
+    void resize() {
+        tree = Arrays.copyOf(tree, size + 1);
     }
 }
