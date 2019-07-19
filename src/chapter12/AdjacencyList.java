@@ -59,4 +59,8 @@ public class AdjacencyList {
                 .mapToObj(String::valueOf)
                 .collect(Collectors.joining(" "));
     }
+
+    boolean isNotAdjacent(int v, int u) {
+        return metrics[v][u] == 0;
+    }
 }
