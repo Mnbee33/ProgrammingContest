@@ -7,6 +7,7 @@ public class DepthFirstSearch extends GraphSearch {
         super(n);
     }
 
+    @Override
     void search() {
         for (int u = 0; u < graph.size; u++) {
             if (visitResults[u].isVisitedNotYet()) visit(u);
@@ -29,6 +30,7 @@ public class DepthFirstSearch extends GraphSearch {
         }
     }
 
+    @Override
     void appendStatus(StringBuilder result, Status status) {
         result.append(status.depthAndStatus());
         result.append(System.lineSeparator());

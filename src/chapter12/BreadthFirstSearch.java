@@ -9,6 +9,7 @@ public class BreadthFirstSearch extends GraphSearch {
         super(n);
     }
 
+    @Override
     void search() {
         Queue<Integer> queue = new ArrayDeque<>();
         setRoot(queue);
@@ -38,6 +39,7 @@ public class BreadthFirstSearch extends GraphSearch {
         }
     }
 
+    @Override
     void appendStatus(StringBuilder result, Status status) {
         String output = status.distance();
         result.append(output);
