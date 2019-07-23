@@ -9,13 +9,6 @@ public class Status {
 
     static final int MAX_DISTANCE = Integer.MAX_VALUE;
 
-    enum VisitStatus {
-        NOT_YET,
-        VISITING,
-        VISITED
-
-
-    }
     Status(int id) {
         this.id = id;
         status = VisitStatus.NOT_YET;
