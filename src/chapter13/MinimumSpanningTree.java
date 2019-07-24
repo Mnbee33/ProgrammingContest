@@ -3,72 +3,94 @@ package chapter13;
 import chapter12.VisitStatus;
 
 public class MinimumSpanningTree {
-    int[][] matrics;
     int size;
+    Tree tree;
+
+    class Node {
+        int x;
+        int y;
+        int cost;
+
+        boolean hasCost() {
+            return cost != Integer.MAX_VALUE;
+        }
+    }
 
     MinimumSpanningTree(int n) {
         size = n;
-        matrics = new int[size][size];
+        tree = new Tree(n);
+    }
+
+    int main(String[] lines) {
+        createTree(lines);
+        return prim();
+    }
+
+    private void createTree(String[] lines) {
+        for (int i = 0; i < size; i++) {
+            String[] inputs = lines[i].split(" ");
+            for (int j = 0; j < size; j++) {
+                int cost = Integer.parseInt(inputs[j]);
+                tree.add(i, j, cost);
+            }
+        }
     }
 
     int prim() {
-        int[] d = new int[size];
-        int[] p = new int[size];
-        VisitStatus[] status = new VisitStatus[size];
-        for (int i = 0; i < size; i++) {
-            d[i] = Integer.MAX_VALUE;
-            p[i] = -1;
-            status[i] = VisitStatus.NOT_YET;
-        }
+        Vertex[] nodes = Vertex.array(size);
+        visitAll(nodes);
+        return sumCost(nodes);
+    }
 
-        d[0] = 0;
-
-        int u;
-        int minv;
+    private void visitAll(Vertex[] nodes) {
+        nodes[0].minCost = 0;
         while (true) {
-            minv = Integer.MAX_VALUE;
-            u = -1;
-            for (int i = 0; i < size; i++) {
-                if (minv > d[i] && !status[i].equals(VisitStatus.VISITED)) {
-                    u = i;
-                    minv = d[i];
-                }
-            }
+            int minVertex = vertexHasMinCost(nodes);
 
-            if (u == -1) {
+            if (isNoCost(minVertex)) {
                 break;
             }
 
-            status[u] = VisitStatus.VISITED;
+            nodes[minVertex].status = VisitStatus.VISITED;
 
             for (int v = 0; v < size; v++) {
-                if (!status[v].equals(VisitStatus.VISITED) && matrics[u][v] != Integer.MAX_VALUE) {
-                    if (d[v] > matrics[u][v]) {
-                        d[v] = matrics[u][v];
-                        p[v] = u;
-                        status[v] = VisitStatus.VISITING;
+                Vertex node = nodes[v];
+                int cost = tree.cost(minVertex, v);
+
+                if (node.isNotVisited() && cost != Integer.MAX_VALUE) {
+                    if (node.minCost > cost) {
+                        node.set(cost, minVertex, VisitStatus.VISITING);
                     }
                 }
             }
         }
+    }
 
+    private int vertexHasMinCost(Vertex[] nodes) {
+        int u = -1;
+        int minCost = Integer.MAX_VALUE;
+        for (int i = 0; i < size; i++) {
+            Vertex vertex = nodes[i];
+            if (minCost > vertex.minCost && vertex.isNotVisited()) {
+                u = i;
+                minCost = vertex.minCost;
+            }
+        }
+        return u;
+    }
+
+    private boolean isNoCost(int minVertex) {
+        return minVertex == -1;
+    }
+
+    private int sumCost(Vertex[] nodes) {
         int sum = 0;
         for (int i = 0; i < size; i++) {
-            if (p[i] != -1) {
-                sum += matrics[i][p[i]];
+            Vertex node = nodes[i];
+            if (node.parent != -1) {
+                sum += tree.cost(i, node.parent);
             }
         }
         return sum;
-    }
-
-    int main(String[] lines) {
-        for (int i = 0; i < size; i++) {
-            String[] inputs = lines[i].split(" ");
-            for (int j = 0; j < size; j++) {
-                int weight = Integer.parseInt(inputs[j]);
-                matrics[i][j] = (weight == -1 ? Integer.MAX_VALUE : weight);
-            }
-        }
-        return prim();
     }
 }
