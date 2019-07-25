@@ -1,21 +1,18 @@
 package chapter13;
 
 public class Tree {
-    int[][] metrics;
+    Vertex[][] table;
 
     Tree(int n) {
-        metrics = new int[n][n];
+        table = new Vertex[n][n];
     }
 
-    void add(int x, int y, int cost) {
-        metrics[x][y] = (isNoCost(cost) ? Integer.MAX_VALUE : cost);
+    void add(int x, int y, Vertex vertex) {
+        table[x][y] = vertex.hasCost() ? vertex : Vertex.ofEmpty();
     }
 
-    int cost(int x, int y) {
-        return metrics[x][y];
+    Vertex vertex(int x, int y) {
+        return table[x][y];
     }
 
-    private boolean isNoCost(int minVertex) {
-        return minVertex == -1;
-    }
 }

@@ -6,16 +6,6 @@ public class MinimumSpanningTree {
     int size;
     Tree tree;
 
-    class Node {
-        int x;
-        int y;
-        int cost;
-
-        boolean hasCost() {
-            return cost != Integer.MAX_VALUE;
-        }
-    }
-
     MinimumSpanningTree(int n) {
         size = n;
         tree = new Tree(n);
@@ -31,66 +21,44 @@ public class MinimumSpanningTree {
             String[] inputs = lines[i].split(" ");
             for (int j = 0; j < size; j++) {
                 int cost = Integer.parseInt(inputs[j]);
-                tree.add(i, j, cost);
+                tree.add(i, j, Vertex.of(cost));
             }
         }
     }
 
     int prim() {
-        Vertex[] nodes = Vertex.array(size);
-        visitAll(nodes);
-        return sumCost(nodes);
+        MinimumCosts minCosts = new MinimumCosts(size);
+        visitAll(minCosts);
+        return minCosts.sum();
     }
 
-    private void visitAll(Vertex[] nodes) {
-        nodes[0].minCost = 0;
+    private void visitAll(MinimumCosts costs) {
+        costs.vertex(0).minCost = 0;
         while (true) {
-            int minVertex = vertexHasMinCost(nodes);
+            MinCostVertex minv = costs.minVertexNotVisited();
 
-            if (isNoCost(minVertex)) {
+            if (minv.isEmpty()) {
                 break;
             }
 
-            nodes[minVertex].status = VisitStatus.VISITED;
-
-            for (int v = 0; v < size; v++) {
-                Vertex node = nodes[v];
-                int cost = tree.cost(minVertex, v);
-
-                if (node.isNotVisited() && cost != Integer.MAX_VALUE) {
-                    if (node.minCost > cost) {
-                        node.set(cost, minVertex, VisitStatus.VISITING);
-                    }
-                }
-            }
+            minv.status = VisitStatus.VISITED;
+            visitAdjacency(minv, costs);
         }
     }
 
-    private int vertexHasMinCost(Vertex[] nodes) {
-        int u = -1;
-        int minCost = Integer.MAX_VALUE;
-        for (int i = 0; i < size; i++) {
-            Vertex vertex = nodes[i];
-            if (minCost > vertex.minCost && vertex.isNotVisited()) {
-                u = i;
-                minCost = vertex.minCost;
-            }
+    void visitAdjacency(MinCostVertex parent, MinimumCosts costs) {
+        for (int v = 0; v < size; v++) {
+            Vertex adjacent = tree.vertex(parent.id, v);
+            MinCostVertex min = costs.vertex(v);
+            visitMinVertex(min, adjacent);
         }
-        return u;
     }
 
-    private boolean isNoCost(int minVertex) {
-        return minVertex == -1;
-    }
-
-    private int sumCost(Vertex[] nodes) {
-        int sum = 0;
-        for (int i = 0; i < size; i++) {
-            Vertex node = nodes[i];
-            if (node.parent != -1) {
-                sum += tree.cost(i, node.parent);
+    private void visitMinVertex(MinCostVertex parent, Vertex vertex) {
+        if (parent.isNotVisited() && vertex.hasCost()) {
+            if (parent.minCost > vertex.cost) {
+                parent.set(vertex.cost, parent.id, VisitStatus.VISITING);
             }
         }
-        return sum;
     }
 }
