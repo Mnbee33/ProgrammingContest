@@ -6,7 +6,7 @@ public class MinimumCosts {
 
     MinimumCosts(int size) {
         this.size = size;
-        minCosts = MinCostVertex.array(size);
+        minCosts = MinCostVertex.arrays(size);
     }
 
     int sum() {

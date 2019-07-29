@@ -8,28 +8,56 @@ public class MinCostVertex {
     int parent;
     VisitStatus status;
 
-    static MinCostVertex of(int id, int cost, int parent, VisitStatus status) {
-        MinCostVertex node = new MinCostVertex();
-        node.id = id;
-        node.set(cost, parent, status);
-        return node;
+    static class Builder {
+
+        final int id;
+
+        int cost = Integer.MAX_VALUE;
+        int parent = -1;
+
+        VisitStatus status = VisitStatus.NOT_YET;
+
+        Builder(int id) {
+            this.id = id;
+        }
+
+        Builder cost(int value) {
+            cost = value;
+            return this;
+        }
+
+        Builder parent(int value) {
+            parent = value;
+            return this;
+        }
+
+        Builder status(VisitStatus value) {
+            status = value;
+            return this;
+        }
+
+        MinCostVertex build() {
+            return new MinCostVertex(this);
+        }
+    }
+
+    MinCostVertex(Builder builder) {
+        id = builder.id;
+        minCost = builder.cost;
+        parent = builder.parent;
+        status = builder.status;
     }
 
     static MinCostVertex of(int id) {
-        return of(id, Integer.MAX_VALUE, -1, VisitStatus.NOT_YET);
+        Builder builder = new Builder(id);
+        return builder.build();
     }
 
     static MinCostVertex ofEmpty() {
         return of(-1);
     }
 
-    void set(int cost, int parent, VisitStatus status) {
-        this.minCost = cost;
-        this.parent = parent;
-        this.status = status;
-    }
-
-    static MinCostVertex[] array(int size) {
+    static MinCostVertex[] arrays(int size) {
         MinCostVertex[] vertexArray = new MinCostVertex[size];
         for (int i = 0; i < size; i++) {
             vertexArray[i] = of(i);
@@ -43,5 +71,15 @@ public class MinCostVertex {
 
     boolean isEmpty() {
         return id == -1;
+    }
+
+    void visitMinVertex(Vertex vertex) {
+        if (isNotVisited() && vertex.hasCost()) {
+            if (minCost > vertex.cost) {
+                minCost = vertex.cost;
+                parent = id;
+                status = VisitStatus.VISITING;
+            }
+        }
     }
 }

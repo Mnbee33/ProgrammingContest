@@ -7,12 +7,11 @@ public class Tree {
         table = new Vertex[n][n];
     }
 
-    void add(int x, int y, Vertex vertex) {
-        table[x][y] = vertex.hasCost() ? vertex : Vertex.ofEmpty();
+    void add(Point point, Vertex vertex) {
+        table[point.x][point.y] = vertex.hasCost() ? vertex : Vertex.ofEmpty();
     }
 
-    Vertex vertex(int x, int y) {
-        return table[x][y];
+    Vertex vertex(Point point) {
+        return table[point.x][point.y];
     }
-
 }
