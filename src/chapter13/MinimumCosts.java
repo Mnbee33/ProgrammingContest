@@ -1,12 +1,14 @@
 package chapter13;
 
+import chapter12.VisitStatus;
+
 public class MinimumCosts {
     MinCostVertex[] minCosts;
     int size;
 
     MinimumCosts(int size) {
         this.size = size;
-        minCosts = MinCostVertex.arrays(size);
+        minCosts = MinCostVertex.of(size);
     }
 
     int sum() {
@@ -31,6 +33,20 @@ public class MinimumCosts {
             }
         }
         return v;
+    }
+
+    void visitAll(MinimumSpanningTree minimumSpanningTree) {
+        vertex(0).minCost = 0;
+        while (true) {
+            MinCostVertex minv = minVertexNotVisited();
+
+            if (minv.isEmpty()) {
+                break;
+            }
+
+            minv.status = VisitStatus.VISITED;
+            minimumSpanningTree.visitAdjacency(minv, this);
+        }
     }
 
     MinCostVertex vertex(int id) {

@@ -21,7 +21,7 @@ public class MinimumSpanningTree {
             String[] inputs = lines[i].split(" ");
             for (int j = 0; j < size; j++) {
                 int cost = Integer.parseInt(inputs[j]);
-                tree.add(Point.of(i, j), Vertex.of(cost));
+                tree.add(new Point(i, j), new Vertex(cost));
             }
         }
     }
@@ -48,7 +48,7 @@ public class MinimumSpanningTree {
 
     void visitAdjacency(MinCostVertex parent, MinimumCosts costs) {
         for (int v = 0; v < size; v++) {
-            Vertex adjacent = tree.vertex(Point.of(parent.id, v));
+            Vertex adjacent = tree.vertex(new Point(parent.id, v));
             MinCostVertex min = costs.vertex(v);
             min.visitMinVertex(adjacent);
         }

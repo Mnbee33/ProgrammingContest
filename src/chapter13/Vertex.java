@@ -7,13 +7,11 @@ public class Vertex {
         return cost != Integer.MAX_VALUE && cost != -1;
     }
 
-    static Vertex of(int cost) {
-        Vertex v = new Vertex();
-        v.cost = cost;
-        return v;
+    Vertex(int cost) {
+        this.cost = cost;
     }
 
     static Vertex ofEmpty() {
-        return of(Integer.MAX_VALUE);
+        return new Vertex(Integer.MAX_VALUE);
     }
 }
